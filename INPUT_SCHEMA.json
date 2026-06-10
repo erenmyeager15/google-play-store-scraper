@@ -1,0 +1,76 @@
+{
+  "title": "Google Play Store Scraper",
+  "description": "Scrape Google Play apps and reviews by app ID, search keyword, or category. No login or API key required.",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "appIds": {
+      "title": "App Package IDs",
+      "description": "Google Play package names (e.g. \"com.whatsapp\") or full Play Store URLs.",
+      "type": "array",
+      "editor": "stringList",
+      "prefill": ["com.whatsapp"],
+      "default": ["com.whatsapp"]
+    },
+    "keywords": {
+      "title": "Search Keywords",
+      "description": "Keywords to search on Google Play. Matching apps are scraped in full.",
+      "type": "array",
+      "editor": "stringList",
+      "default": []
+    },
+    "categories": {
+      "title": "Categories",
+      "description": "Google Play category codes to browse (e.g. \"SOCIAL\", \"GAME_ACTION\", \"PRODUCTIVITY\").",
+      "type": "array",
+      "editor": "stringList",
+      "default": []
+    },
+    "includeReviews": {
+      "title": "Include Reviews",
+      "description": "If enabled, top reviews for each app are also scraped.",
+      "type": "boolean",
+      "editor": "checkbox",
+      "default": false
+    },
+    "maxReviewsPerApp": {
+      "title": "Max Reviews Per App",
+      "description": "Maximum reviews to extract per app (when 'Include Reviews' is on).",
+      "type": "integer",
+      "editor": "number",
+      "default": 10,
+      "minimum": 0,
+      "maximum": 1000
+    },
+    "maxResults": {
+      "title": "Max Apps",
+      "description": "Maximum number of apps to scrape in total (across IDs, keywords, and categories).",
+      "type": "integer",
+      "editor": "number",
+      "default": 50,
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "country": {
+      "title": "Country",
+      "description": "Two-letter country code for the Play storefront (e.g. \"us\", \"gb\", \"in\").",
+      "type": "string",
+      "editor": "textfield",
+      "default": "us"
+    },
+    "language": {
+      "title": "Language",
+      "description": "Two-letter language code (e.g. \"en\", \"es\", \"hi\").",
+      "type": "string",
+      "editor": "textfield",
+      "default": "en"
+    },
+    "proxyConfiguration": {
+      "title": "Proxy Configuration",
+      "description": "Proxy settings. Google Play is generally accessible; enable proxies to avoid rate limits on large runs.",
+      "type": "object",
+      "editor": "proxy",
+      "default": { "useApifyProxy": true }
+    }
+  }
+}

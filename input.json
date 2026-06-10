@@ -1,0 +1,14 @@
+{
+    "appIds": [
+        "com.whatsapp"
+    ],
+    "keywords": [],
+    "categories": [],
+    "includeReviews": true,
+    "maxReviewsPerApp": 10,
+    "maxResults": 50,
+    "proxyConfiguration": {
+        "useApifyProxy": true,
+        "apifyProxyGroups": ["RESIDENTIAL"]
+    }
+}

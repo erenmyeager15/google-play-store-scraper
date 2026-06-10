@@ -1,0 +1,71 @@
+{
+  "actorSpecification": 1,
+  "name": "google-play-store-scraper",
+  "title": "Google Play Store Scraper - Apps, Ratings & Reviews",
+  "description": "Scrape Google Play Store apps: ratings, installs, prices, developer info, descriptions, screenshots, and user reviews. Search by keyword, app ID, or category. No login or API key needed.",
+  "version": "1.0",
+  "categories": ["BUSINESS", "DEVELOPER_TOOLS", "ECOMMERCE"],
+  "dockerfile": "Dockerfile",
+  "input": "../INPUT_SCHEMA.json",
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "views": {
+        "apps": {
+          "title": "Apps",
+          "transformation": {
+            "fields": ["appId", "appName", "developer", "category", "score", "ratingsCount", "reviewsCount", "installs", "price", "priceText", "free", "contentRating", "version", "androidVersion", "updated", "appUrl", "iconUrl", "country", "scrapedAt"]
+          },
+          "display": {
+            "component": "table",
+            "properties": {
+              "appId": { "label": "App ID", "format": "text" },
+              "appName": { "label": "Name", "format": "text" },
+              "developer": { "label": "Developer", "format": "text" },
+              "category": { "label": "Category", "format": "text" },
+              "score": { "label": "Rating", "format": "number" },
+              "ratingsCount": { "label": "Ratings", "format": "number" },
+              "reviewsCount": { "label": "Reviews", "format": "number" },
+              "installs": { "label": "Installs", "format": "text" },
+              "price": { "label": "Price", "format": "number" },
+              "priceText": { "label": "Price (text)", "format": "text" },
+              "free": { "label": "Free", "format": "boolean" },
+              "contentRating": { "label": "Content Rating", "format": "text" },
+              "version": { "label": "Version", "format": "text" },
+              "androidVersion": { "label": "Android", "format": "text" },
+              "updated": { "label": "Updated", "format": "date" },
+              "appUrl": { "label": "URL", "format": "link" },
+              "iconUrl": { "label": "Icon", "format": "image" },
+              "country": { "label": "Country", "format": "text" },
+              "scrapedAt": { "label": "Scraped At", "format": "text" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "pricingInfo": {
+    "pricingModel": "PAY_PER_EVENT",
+    "pricingPerEvent": {
+      "actorChargeEvents": {
+        "app-scraped": {
+          "eventTitle": "App Scraped",
+          "eventDescription": "Charged for each Google Play app extracted and saved to the dataset.",
+          "eventPriceUsd": 0.002
+        },
+        "review-scraped": {
+          "eventTitle": "Review Scraped",
+          "eventDescription": "Charged for each app review extracted and saved to the dataset.",
+          "eventPriceUsd": 0.001
+        }
+      }
+    }
+  },
+  "defaultRunOptions": {
+    "build": "latest",
+    "memoryMbytes": 1024,
+    "timeoutSecs": 3600
+  },
+  "minMemoryMbytes": 256,
+  "maxMemoryMbytes": 4096
+}
