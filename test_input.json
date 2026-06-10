@@ -1,0 +1,11 @@
+{
+  "appIds": ["com.whatsapp"],
+  "keywords": ["weather"],
+  "categories": [],
+  "includeReviews": true,
+  "maxReviewsPerApp": 3,
+  "maxResults": 4,
+  "country": "us",
+  "language": "en",
+  "proxyConfiguration": { "useApifyProxy": true }
+}
