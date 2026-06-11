@@ -67,6 +67,14 @@ Perfect for **app store optimization (ASO), competitor tracking, market research
 }
 ```
 
+## How to Scrape the Google Play Store (Step by Step)
+
+1. Click **Try for free** / **Run**.
+2. Add app package IDs (e.g. `com.whatsapp`), search keywords, or category codes (e.g. `SOCIAL`).
+3. Set `country`/`language`, and turn on `includeReviews` with `maxReviewsPerApp` if you want reviews.
+4. Set `maxResults` (start small to test).
+5. Run, then export results as JSON, CSV, Excel, or HTML, or pull them via the Apify API.
+
 ## Pricing
 
 This Actor uses **pay-per-result** pricing:
