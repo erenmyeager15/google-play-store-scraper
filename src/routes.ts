@@ -14,7 +14,6 @@ export function mapApp(a: any, country: string): AppRecord {
         appName: a.title ?? null,
         developer: a.developer ?? null,
         developerId: a.developerId != null ? String(a.developerId) : null,
-        developerEmail: a.developerEmail ?? null,
         developerWebsite: a.developerWebsite ?? null,
         category: a.genre ?? null,
         categoryId: a.genreId ?? null,

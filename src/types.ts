@@ -19,7 +19,6 @@ export interface AppRecord {
     appName: string | null;
     developer: string | null;
     developerId: string | null;
-    developerEmail: string | null;
     developerWebsite: string | null;
     category: string | null;
     categoryId: string | null;
