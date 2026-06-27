@@ -7,6 +7,8 @@
   "categories": ["BUSINESS", "DEVELOPER_TOOLS", "ECOMMERCE"],
   "dockerfile": "Dockerfile",
   "input": "../INPUT_SCHEMA.json",
+  "readme": "../README.md",
+  "output": "./output_schema.json",
   "storages": {
     "dataset": {
       "actorSpecification": 1,
@@ -55,7 +57,7 @@
         },
         "review-scraped": {
           "eventTitle": "Review Scraped",
-          "eventDescription": "Charged for each app review extracted and saved to the dataset.",
+          "eventDescription": "Charged for each app review included in a saved Google Play app record.",
           "eventPriceUsd": 0.001
         }
       }
@@ -63,7 +65,7 @@
   },
   "defaultRunOptions": {
     "build": "latest",
-    "memoryMbytes": 1024,
+    "memoryMbytes": 512,
     "timeoutSecs": 3600
   },
   "minMemoryMbytes": 256,
