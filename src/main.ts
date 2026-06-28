@@ -81,10 +81,13 @@ log.info(`Scraping ${targetIds.length} app(s) | reviews=${includeReviews}`);
 // Concurrency-limited processing.
 const CONCURRENCY = 5;
 let scraped = 0;
+let savedReviews = 0;
 let cursor = 0;
+let spendingLimitReached = false;
+let fatalBillingError: Error | null = null;
 
 async function worker(): Promise<void> {
-    while (cursor < targetIds.length) {
+    while (cursor < targetIds.length && !spendingLimitReached && !fatalBillingError) {
         const appId = targetIds[cursor++];
         try {
             const app = await gplay.app({ appId, ...base });
@@ -101,14 +104,52 @@ async function worker(): Promise<void> {
                 }
             }
 
-            appRecord.reviewsScrapedCount = reviews.length;
-            appRecord.reviews = reviews;
-            await Actor.pushData(appRecord);
-            await Actor.charge({ eventName: 'app-scraped' }).catch(() => null);
-            for (let i = 0; i < reviews.length; i++) await Actor.charge({ eventName: 'review-scraped' }).catch(() => null);
-            scraped++;
+            let appLimitReached = false;
+            let reviewLimitReached = false;
+            try {
+                // Save and charge each exported row atomically. This keeps revenue
+                // aligned with the exact app/review rows that reached the dataset.
+                const appChargeResult = await Actor.pushData(appRecord, 'app-scraped');
+                const appRecordWasSaved = appChargeResult.chargedCount > 0 || !appChargeResult.eventChargeLimitReached;
+                if (appRecordWasSaved) {
+                    scraped += 1;
+                }
+                appLimitReached = appChargeResult.eventChargeLimitReached;
+
+                if (appRecordWasSaved && reviews.length > 0) {
+                    for (const reviewRecord of reviews) {
+                        const reviewChargeResult = await Actor.pushData(reviewRecord, 'review-scraped');
+                        const reviewRecordWasSaved = reviewChargeResult.chargedCount > 0 || !reviewChargeResult.eventChargeLimitReached;
+                        if (reviewRecordWasSaved) {
+                            savedReviews += 1;
+                        }
+                        if (reviewChargeResult.eventChargeLimitReached) {
+                            reviewLimitReached = true;
+                            break;
+                        }
+                    }
+                }
+            } catch (billingError) {
+                fatalBillingError = billingError instanceof Error
+                    ? billingError
+                    : new Error(String(billingError));
+                spendingLimitReached = true;
+                log.error(`Fatal output billing failure for ${appId}: ${fatalBillingError.message}`);
+                throw fatalBillingError;
+            }
+
             log.info(`${appId}: app scraped${reviews.length ? ` + ${reviews.length} reviews` : ''}`);
+
+            if (appLimitReached || reviewLimitReached) {
+                spendingLimitReached = true;
+                await Actor.setStatusMessage(
+                    `Stopped at the user's spending limit after ${scraped} apps and ${savedReviews} reviews`,
+                );
+                log.warning('User spending limit reached; stopping before more Google Play requests.');
+                return;
+            }
         } catch (e) {
+            if (fatalBillingError) throw fatalBillingError;
             log.warning(`${appId}: failed - ${(e as Error).message}`);
         }
     }
@@ -116,5 +157,9 @@ async function worker(): Promise<void> {
 
 await Promise.all(Array.from({ length: Math.min(CONCURRENCY, targetIds.length) }, () => worker()));
 
+if (fatalBillingError) throw fatalBillingError;
+if (!spendingLimitReached) {
+    await Actor.setStatusMessage(`Finished with ${scraped} apps and ${savedReviews} reviews`);
+}
 log.info(`Google Play scrape finished. ${scraped} apps scraped.`);
 await Actor.exit();

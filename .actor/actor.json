@@ -57,7 +57,7 @@
         },
         "review-scraped": {
           "eventTitle": "Review Scraped",
-          "eventDescription": "Charged for each app review included in a saved Google Play app record.",
+          "eventDescription": "Charged for each Google Play app review extracted and saved to the dataset.",
           "eventPriceUsd": 0.001
         }
       }
