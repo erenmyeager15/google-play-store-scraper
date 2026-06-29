@@ -42,6 +42,27 @@
               "scrapedAt": { "label": "Scraped At", "format": "text" }
             }
           }
+        },
+        "reviews": {
+          "title": "Reviews",
+          "transformation": {
+            "fields": ["appId", "reviewId", "userName", "score", "text", "date", "thumbsUp", "reviewVersion", "developerReply", "scrapedAt"]
+          },
+          "display": {
+            "component": "table",
+            "properties": {
+              "appId": { "label": "App ID", "format": "text" },
+              "reviewId": { "label": "Review ID", "format": "text" },
+              "userName": { "label": "User", "format": "text" },
+              "score": { "label": "Rating", "format": "number" },
+              "text": { "label": "Review", "format": "text" },
+              "date": { "label": "Date", "format": "date" },
+              "thumbsUp": { "label": "Helpful", "format": "number" },
+              "reviewVersion": { "label": "Version", "format": "text" },
+              "developerReply": { "label": "Developer Reply", "format": "text" },
+              "scrapedAt": { "label": "Scraped At", "format": "text" }
+            }
+          }
         }
       }
     }
@@ -53,12 +74,23 @@
         "app-scraped": {
           "eventTitle": "App Scraped",
           "eventDescription": "Charged for each Google Play app extracted and saved to the dataset.",
-          "eventPriceUsd": 0.002
+          "eventPriceUsd": 0.002,
+          "isPrimaryEvent": true,
+          "isOneTimeEvent": false
         },
         "review-scraped": {
           "eventTitle": "Review Scraped",
           "eventDescription": "Charged for each Google Play app review extracted and saved to the dataset.",
-          "eventPriceUsd": 0.001
+          "eventPriceUsd": 0.001,
+          "isPrimaryEvent": false,
+          "isOneTimeEvent": false
+        },
+        "apify-actor-start": {
+          "eventTitle": "Actor Start",
+          "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+          "eventPriceUsd": 0.00005,
+          "isPrimaryEvent": false,
+          "isOneTimeEvent": true
         }
       }
     }

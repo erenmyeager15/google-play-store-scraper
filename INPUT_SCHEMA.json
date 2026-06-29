@@ -6,11 +6,11 @@
   "properties": {
     "appIds": {
       "title": "App Package IDs",
-      "description": "Google Play package names (e.g. \"com.whatsapp\") or full Play Store URLs.",
+      "description": "Google Play package names (e.g. \"com.openai.chatgpt\") or full Play Store URLs.",
       "type": "array",
       "editor": "stringList",
-      "prefill": ["com.whatsapp"],
-      "default": ["com.whatsapp"]
+      "prefill": ["com.openai.chatgpt"],
+      "default": ["com.openai.chatgpt"]
     },
     "keywords": {
       "title": "Search Keywords",
@@ -44,10 +44,10 @@
     },
     "maxResults": {
       "title": "Max Apps",
-      "description": "Maximum number of apps to scrape in total (across IDs, keywords, and categories).",
+      "description": "Maximum number of apps to scrape in total across IDs, keywords, and categories. Use 1-5 for a quick test.",
       "type": "integer",
       "editor": "number",
-      "default": 50,
+      "default": 1,
       "minimum": 1,
       "maximum": 1000
     },
@@ -70,7 +70,7 @@
       "description": "Proxy settings. Google Play is generally accessible; enable proxies to avoid rate limits on large runs.",
       "type": "object",
       "editor": "proxy",
-      "default": { "useApifyProxy": true }
+      "default": { "useApifyProxy": false }
     }
   }
 }

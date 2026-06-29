@@ -1,109 +1,125 @@
 # Google Play Store Scraper - Apps, Ratings & Reviews
 
-Scrape **app data and reviews from the Google Play Store** - no login, no API key required. Get ratings, install counts, prices, developer info, categories, versions, descriptions, screenshots, and user reviews. Search by keyword, app ID, or category, across any country storefront. Export to **JSON, CSV, Excel, or HTML**, or pull via the Apify API.
+Scrape public Google Play Store app metadata by package ID, keyword, or category. Export app names, developers, ratings, review counts, install ranges, prices, versions, Android requirements, screenshots, URLs, and optional review rows to JSON, CSV, Excel, HTML, or the Apify API.
 
-Perfect for **app store optimization (ASO), competitor tracking, market research, and review monitoring**.
+This Actor is API-based and does not need a login or API key. Proxy is disabled by default for the quick-start path.
 
-## Features
+## What It Extracts
 
-- ✅ **No login or API key**
-- ✅ **Three input modes** - app package IDs, search keywords, or category browsing
-- ✅ **Full app metadata** - rating, ratings count, installs, price, developer, version, content rating
-- ✅ **User reviews** - optional, nested per app (rating, text, date, helpful count)
-- ✅ **Any country & language storefront**
-- ✅ **Fast & lightweight** - API-based, no headless browser
+- App ID, app name, developer, developer ID, developer website
+- Category, category ID, rating, rating text, rating count, review count
+- Installs, minimum installs, price, currency, free/paid flag
+- In-app purchase and ad-support flags when available
+- Content rating, version, Android version, release/update dates
+- Summary, description, privacy policy URL, Play Store URL, icon, header image, screenshots
+- Optional review rows with review ID, username, score, text, date, thumbs-up count, app version, developer reply, and scrape timestamp
+
+## Quick Start
+
+Use this small input first:
+
+```json
+{
+  "appIds": ["com.openai.chatgpt"],
+  "keywords": [],
+  "categories": [],
+  "includeReviews": false,
+  "maxReviewsPerApp": 0,
+  "maxResults": 1,
+  "country": "us",
+  "language": "en",
+  "proxyConfiguration": {
+    "useApifyProxy": false
+  }
+}
+```
 
 ## Input
 
-| Parameter | Type | Description | Default |
-|-----------|------|-------------|---------|
-| `appIds` | `string[]` | Package names (e.g. `"com.whatsapp"`) or Play URLs | `["com.whatsapp"]` |
-| `keywords` | `string[]` | Search keywords | `[]` |
-| `categories` | `string[]` | Category codes (e.g. `"SOCIAL"`, `"GAME_ACTION"`) | `[]` |
-| `includeReviews` | `boolean` | Include top reviews per app (nested) | `false` |
-| `maxReviewsPerApp` | `integer` | Max reviews per app | `10` |
-| `maxResults` | `integer` | Max apps total | `50` |
-| `country` | `string` | Storefront country code | `us` |
-| `language` | `string` | Language code | `en` |
-| `proxyConfiguration` | `object` | Proxy (helps avoid rate limits on large runs) | Apify Proxy |
+| Field | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `appIds` | array<string> | `["com.openai.chatgpt"]` | Package names or Play Store URLs. |
+| `keywords` | array<string> | `[]` | Search keywords. Matching apps are then scraped in full. |
+| `categories` | array<string> | `[]` | Category codes such as `SOCIAL`, `PRODUCTIVITY`, or `GAME_ACTION`. |
+| `includeReviews` | boolean | `false` | Saves review rows in addition to app rows. |
+| `maxReviewsPerApp` | integer | `10` | Applies only when reviews are enabled. |
+| `maxResults` | integer | `1` | Maximum apps across package IDs, keywords, and categories. Use 1-5 for tests. |
+| `country` | string | `us` | Two-letter Play Store country code. |
+| `language` | string | `en` | Two-letter language code. |
+| `proxyConfiguration` | object | disabled | Keep disabled unless large runs start hitting rate limits. |
 
-### Example input
+## Output Dataset
 
-```json
-{
-  "appIds": ["com.whatsapp"],
-  "keywords": ["weather"],
-  "includeReviews": true,
-  "maxReviewsPerApp": 20,
-  "maxResults": 50,
-  "country": "us"
-}
-```
+The dataset saves one app row for each matched app. If `includeReviews` is enabled, review rows are saved separately and charged with the `review-scraped` event. The table view focuses on app rows; use JSON export for the full row set.
 
-## Sample output
+Verified app sample from an existing successful run:
 
 ```json
 {
-  "appId": "com.whatsapp",
-  "appName": "WhatsApp Messenger",
-  "developer": "WhatsApp LLC",
-  "category": "Communication",
-  "score": 4.66,
-  "ratingsCount": 236591465,
-  "reviewsCount": 1965687,
-  "installs": "10,000,000,000+",
+  "appId": "com.openai.chatgpt",
+  "appName": "ChatGPT",
+  "developer": "OpenAI",
+  "category": "Productivity",
+  "categoryId": "PRODUCTIVITY",
+  "score": 4.7628264,
+  "scoreText": "4.8",
+  "ratingsCount": 49573361,
+  "reviewsCount": 173167,
+  "installs": "1,000,000,000+",
+  "minInstalls": 1000000000,
   "price": 0,
+  "priceText": "Free",
+  "currency": "USD",
   "free": true,
-  "contentRating": "Everyone",
-  "version": "VARY",
-  "updated": "2026-06-09T...",
-  "appUrl": "https://play.google.com/store/apps/details?id=com.whatsapp",
-  "reviewsScrapedCount": 3,
-  "reviews": [
-    { "reviewId": "7e3f...", "userName": "Wisdom John", "score": 5, "text": "...", "date": "2026-06-09T21:35:40.541Z", "thumbsUp": 0, "developerReply": null }
-  ],
+  "offersInAppPurchases": true,
+  "contentRating": "Teen",
+  "version": "1.2026.160",
+  "androidVersion": "7.1",
+  "updated": "2026-06-19T18:23:00.000Z",
+  "released": "Jul 21, 2023",
+  "summary": "Your AI assistant for writing, search, image generation, and more",
+  "appUrl": "https://play.google.com/store/apps/details?id=com.openai.chatgpt&hl=en&gl=us",
   "country": "us",
-  "scrapedAt": "2026-06-11T10:00:00.000Z"
+  "scrapedAt": "2026-06-21T12:12:05.884Z"
 }
 ```
 
-## How to Scrape the Google Play Store (Step by Step)
+## Pricing And Cost Control
 
-1. Click **Try for free** / **Run**.
-2. Add app package IDs (e.g. `com.whatsapp`), search keywords, or category codes (e.g. `SOCIAL`).
-3. Set `country`/`language`, and turn on `includeReviews` with `maxReviewsPerApp` if you want reviews.
-4. Set `maxResults` (start small to test).
-5. Run, then export results as JSON, CSV, Excel, or HTML, or pull them via the Apify API.
+Current live pricing checked on 2026-06-29:
 
-## Pricing
+| Event | Active price |
+| --- | ---: |
+| `app-scraped` | `$0.002` per app row |
+| `review-scraped` | `$0.001` per review row |
+| `apify-actor-start` | `$0.00005` per GB |
 
-This Actor uses **pay-per-result** pricing:
+Review rows are charged only when `includeReviews` is enabled. App and review rows are saved and charged atomically, and workers stop when the user's spending limit is reached.
 
-| Event | Price |
-|-------|-------|
-| Per app scraped | **$0.002** ($2 / 1,000 apps) |
-| Per review scraped | **$0.001** ($1 / 1,000 reviews) |
+Cost-control tips:
 
-Reviews are charged only when `includeReviews` is on. You are only charged for data actually returned. Apify platform usage is billed separately by Apify.
+- Start with one app ID and `maxResults: 1`.
+- Keep `includeReviews: false` until you need review rows.
+- Keep proxy disabled for normal API-sized runs.
+- Use country/language settings deliberately because app metadata can differ by storefront.
 
-## Use cases
+## Use Cases
 
-- **App Store Optimization (ASO)** - track keyword rankings and competitor metadata
-- **Review monitoring** - watch sentiment and respond to user feedback
-- **Market research** - analyze categories, pricing, and install trends
-- **App intelligence** - build cross-store datasets (pairs with an App Store scraper)
+- App Store Optimization (ASO) research
+- Competitor metadata and pricing tracking
+- App category and install-range analysis
+- Review monitoring when review rows are enabled
+- Cross-store app intelligence with an Apple App Store scraper
 
-## Tips
+## Known Limits
 
-- App IDs are the package name in a Play URL (`...details?id=com.whatsapp`).
-- Use `country`/`language` to localize results and reviews.
-- Turn on `includeReviews` and set `maxReviewsPerApp` for review datasets.
+- Google Play can change public page/API behavior; occasional missing fields should be expected.
+- Review collection is heavier and can create many rows; keep `maxReviewsPerApp` low at first.
+- Category browsing and broad keyword searches can return many apps, so keep `maxResults` low for tests.
 
 ## Responsible Use
 
-This Actor is intended for lawful collection of publicly available information only. Users are responsible for ensuring their use complies with the source website's terms, robots.txt, applicable privacy laws, including India's DPDP Act, and all local regulations.
-
-Do not use this Actor to collect, store, sell, or misuse personal data without a lawful basis. The Actor author is not responsible for misuse by end users.
+Use this Actor only for lawful collection and analysis of public app-store data. Follow Google Play's terms, applicable privacy laws, anti-spam rules, and local regulations. Do not use review data to identify, harass, or spam users.
 
 ## License
 
