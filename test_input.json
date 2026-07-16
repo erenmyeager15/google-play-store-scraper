@@ -1,11 +1,9 @@
 {
-  "appIds": ["com.whatsapp"],
-  "keywords": ["weather"],
-  "categories": [],
-  "includeReviews": true,
-  "maxReviewsPerApp": 3,
-  "maxResults": 4,
+  "appIds": ["com.openai.chatgpt"],
+  "maxResults": 1,
   "country": "us",
   "language": "en",
-  "proxyConfiguration": { "useApifyProxy": true }
+  "proxyConfiguration": {
+    "useApifyProxy": false
+  }
 }

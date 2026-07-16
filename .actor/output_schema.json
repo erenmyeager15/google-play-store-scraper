@@ -1,14 +1,20 @@
 {
   "actorOutputSchemaVersion": 1,
-  "title": "Google Play Store Scraper Output",
-  "description": "Structured Google Play app and review records with app IDs, names, developers, ratings, installs, prices, versions, URLs, icons, countries, and scraped timestamps.",
+  "title": "Google Play App Metadata Output",
+  "description": "Validated factual Google Play app metadata and aggregate rating metrics from direct package-ID lookups.",
   "type": "object",
   "properties": {
     "results": {
       "type": "string",
       "title": "Google Play app records",
-      "description": "Clean dataset items containing Google Play app metadata, ratings, and optional review data.",
+      "description": "Dataset items containing factual app metadata, aggregate rating counts, installs, price, version, and the official app URL.",
       "template": "{{links.apiDefaultDatasetUrl}}/items"
+    },
+    "runStatus": {
+      "type": "string",
+      "title": "Run diagnostics",
+      "description": "Machine-readable run outcome, counters, and bounded diagnostics.",
+      "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/RUN_STATUS"
     }
   }
 }

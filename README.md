@@ -1,30 +1,14 @@
-# Google Play Store Scraper - Apps, Ratings & Reviews
+# Google Play App Metadata & Ratings Scraper
 
-Scrape public Google Play Store app metadata by package ID, keyword, or category. Export app names, developers, ratings, review counts, install ranges, prices, versions, Android requirements, screenshots, URLs, and optional review rows to JSON, CSV, Excel, HTML, or the Apify API.
+Look up factual public Google Play app metadata from known Android package IDs or official app-detail URLs. Each saved row contains aggregate app metrics such as rating counts, installs, price, version, Android requirement, and the official Google Play URL.
 
-This Actor is API-based and does not need a login or API key. Proxy is disabled by default for the quick-start path.
-
-## What It Extracts
-
-- App ID, app name, developer, developer ID, developer website
-- Category, category ID, rating, rating text, rating count, review count
-- Installs, minimum installs, price, currency, free/paid flag
-- In-app purchase and ad-support flags when available
-- Content rating, version, Android version, release/update dates
-- Summary, description, privacy policy URL, Play Store URL, icon, header image, screenshots
-- Optional review rows with review ID, username, score, text, date, thumbs-up count, app version, developer reply, and scrape timestamp
+This version intentionally supports direct app lookups only. It does not search Google Play, browse categories, collect descriptions or media, or extract individual user reviews.
 
 ## Quick Start
-
-Use this small input first:
 
 ```json
 {
   "appIds": ["com.openai.chatgpt"],
-  "keywords": [],
-  "categories": [],
-  "includeReviews": false,
-  "maxReviewsPerApp": 0,
   "maxResults": 1,
   "country": "us",
   "language": "en",
@@ -34,92 +18,109 @@ Use this small input first:
 }
 ```
 
+You can also provide an official app-detail URL:
+
+```json
+{
+  "appIds": [
+    "https://play.google.com/store/apps/details?id=com.openai.chatgpt"
+  ],
+  "maxResults": 1
+}
+```
+
 ## Input
 
 | Field | Type | Default | Notes |
 | --- | --- | --- | --- |
-| `appIds` | array<string> | `["com.openai.chatgpt"]` | Package names or Play Store URLs. |
-| `keywords` | array<string> | `[]` | Search keywords. Matching apps are then scraped in full. |
-| `categories` | array<string> | `[]` | Category codes such as `SOCIAL`, `PRODUCTIVITY`, or `GAME_ACTION`. |
-| `includeReviews` | boolean | `false` | Saves review rows in addition to app rows. |
-| `maxReviewsPerApp` | integer | `10` | Applies only when reviews are enabled. |
-| `maxResults` | integer | `1` | Maximum apps across package IDs, keywords, and categories. Use 1-5 for tests. |
-| `country` | string | `us` | Two-letter Play Store country code. |
+| `appIds` | array<string> | `["com.openai.chatgpt"]` | Up to 50 package IDs or official Google Play app-detail URLs. |
+| `maxResults` | integer | `1` | Number of unique package IDs to process, from 1 to 50. |
+| `country` | string | `us` | Two-letter storefront country code. |
 | `language` | string | `en` | Two-letter language code. |
-| `proxyConfiguration` | object | disabled | Keep disabled unless large runs start hitting rate limits. |
+| `proxyConfiguration` | object | disabled | Optional Apify or custom HTTP(S) proxy configuration. |
 
-## Output Dataset
+Unknown input fields are rejected. Duplicate package IDs are processed once.
 
-The dataset saves one app row for each matched app. If `includeReviews` is enabled, review rows are saved separately and charged with the `review-scraped` event. The table view focuses on app rows; use JSON export for the full row set.
+## Output
 
-Verified app sample from an existing successful run:
+Each validated dataset row can include:
+
+- Package ID, app name, developer, category, and category ID
+- Aggregate score, rating count, review count, and install range
+- Price, currency, free/paid flag, in-app purchase flag, and ad-support flag
+- Content rating, version, Android requirement, release date, and update timestamp
+- Official Google Play app-detail URL, selected country/language, and scrape timestamp
+
+Example shape:
 
 ```json
 {
+  "source": "google_play",
+  "recordType": "app",
   "appId": "com.openai.chatgpt",
   "appName": "ChatGPT",
   "developer": "OpenAI",
   "category": "Productivity",
   "categoryId": "PRODUCTIVITY",
-  "score": 4.7628264,
-  "scoreText": "4.8",
-  "ratingsCount": 49573361,
-  "reviewsCount": 173167,
-  "installs": "1,000,000,000+",
-  "minInstalls": 1000000000,
+  "score": 4.7,
+  "ratingsCount": 1000000,
+  "reviewsCount": 100000,
+  "installs": "100,000,000+",
+  "minInstalls": 100000000,
   "price": 0,
   "priceText": "Free",
   "currency": "USD",
   "free": true,
   "offersInAppPurchases": true,
+  "adSupported": false,
   "contentRating": "Teen",
-  "version": "1.2026.160",
-  "androidVersion": "7.1",
-  "updated": "2026-06-19T18:23:00.000Z",
+  "version": "1.0.0",
+  "androidVersion": "7.0 and up",
+  "updated": "2026-07-01T00:00:00.000Z",
   "released": "Jul 21, 2023",
-  "summary": "Your AI assistant for writing, search, image generation, and more",
-  "appUrl": "https://play.google.com/store/apps/details?id=com.openai.chatgpt&hl=en&gl=us",
+  "appUrl": "https://play.google.com/store/apps/details?id=com.openai.chatgpt",
   "country": "us",
-  "scrapedAt": "2026-06-21T12:12:05.884Z"
+  "language": "en",
+  "scrapedAt": "2026-07-16T00:00:00.000Z"
 }
 ```
 
-## Pricing And Cost Control
+Nullable fields can be absent from a storefront page and are saved as `null`. Required identity fields are validated before a row is saved or charged.
 
-Current live pricing checked on 2026-06-29:
+## Run Diagnostics
 
-| Event | Active price |
+Every run writes `RUN_STATUS` to the default key-value store. It records:
+
+- Outcome: `succeeded`, `partial`, `empty`, `stopped_spending_limit`, or `failed`
+- Requested, attempted, fetched, unavailable, failed, invalid, saved, and retry counts
+- Up to 20 bounded diagnostics without proxy credentials
+
+Unavailable package IDs produce an honest empty or partial outcome. Source/parser failures do not silently pass as successful zero-result runs.
+
+## Pricing And Limits
+
+Current configured prices:
+
+| Event | Price |
 | --- | ---: |
-| `app-scraped` | `$0.002` per app row |
-| `review-scraped` | `$0.001` per review row |
-| `apify-actor-start` | `$0.00005` per GB |
+| `app-scraped` | `$0.002` per validated app row |
+| `apify-actor-start` | `$0.00005` per GB, minimum one event |
 
-Review rows are charged only when `includeReviews` is enabled. App and review rows are saved and charged atomically, and workers stop when the user's spending limit is reached.
+The pricing metadata also contains a legacy `review-scraped` event at `$0.001`. It is retained until the next permitted pricing update, but this version never collects reviews or emits that event.
 
-Cost-control tips:
+The Actor validates each app row before atomically saving and charging it. Processing stops when the user's event spending limit is reached.
 
-- Start with one app ID and `maxResults: 1`.
-- Keep `includeReviews: false` until you need review rows.
-- Keep proxy disabled for normal API-sized runs.
-- Use country/language settings deliberately because app metadata can differ by storefront.
+## Reliability Boundaries
 
-## Use Cases
-
-- App Store Optimization (ASO) research
-- Competitor metadata and pricing tracking
-- App category and install-range analysis
-- Review monitoring when review rows are enabled
-- Cross-store app intelligence with an Apple App Store scraper
-
-## Known Limits
-
-- Google Play can change public page/API behavior; occasional missing fields should be expected.
-- Review collection is heavier and can create many rows; keep `maxReviewsPerApp` low at first.
-- Category browsing and broad keyword searches can return many apps, so keep `maxResults` low for tests.
+- Requests are limited to direct Google Play app-detail lookups for supplied package IDs.
+- Each source request has a 20-second timeout and up to three bounded attempts.
+- Concurrency and request rate are deliberately low.
+- Google Play page structure and availability can change; the Actor reports parser/source failures through `RUN_STATUS`.
+- The underlying open-source parser is a maintenance risk, so automated tests verify its mapped contract and a live direct-source check should be run after dependency or source changes.
 
 ## Responsible Use
 
-Use this Actor only for lawful collection and analysis of public app-store data. Follow Google Play's terms, applicable privacy laws, anti-spam rules, and local regulations. Do not use review data to identify, harass, or spam users.
+Use this Actor only when your collection and downstream use comply with Google Play's current terms, machine-readable instructions, applicable laws, and any rights attached to the data. This Actor does not grant redistribution or other rights. Do not use it to identify, profile, contact, or target individual users.
 
 ## License
 

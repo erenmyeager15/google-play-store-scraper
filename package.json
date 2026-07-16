@@ -1,13 +1,15 @@
 {
   "name": "google-play-store-scraper",
   "version": "1.0.0",
-  "description": "Apify Actor that scrapes Google Play Store app data, ratings, and reviews",
+  "description": "Apify Actor for direct Google Play app metadata and aggregate rating lookups",
   "type": "module",
   "main": "dist/main.js",
   "scripts": {
     "start": "node dist/main.js",
     "build": "tsc",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test": "npm run build && node --test tests/input.test.mjs tests/routes.test.mjs tests/status.test.mjs tests/validation.test.mjs tests/metadata.test.mjs",
+    "test:source": "npm run build && node scripts/direct-source-check.mjs"
   },
   "dependencies": {
     "apify": "^3.2.0",

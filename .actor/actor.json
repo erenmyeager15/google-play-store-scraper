@@ -1,8 +1,8 @@
 {
   "actorSpecification": 1,
   "name": "google-play-store-scraper",
-  "title": "Google Play Store Scraper - Apps, Ratings & Reviews",
-  "description": "Scrape Google Play Store apps: ratings, installs, prices, developer info, descriptions, screenshots, and user reviews. Search by keyword, app ID, or category. No login or API key needed.",
+  "title": "Google Play App Metadata & Ratings Scraper",
+  "description": "Look up factual public Google Play app metadata by package ID: developer, category, aggregate rating counts, installs, price, version, Android requirement, and official URL.",
   "version": "1.0",
   "categories": ["BUSINESS", "DEVELOPER_TOOLS", "ECOMMERCE"],
   "dockerfile": "Dockerfile",
@@ -10,62 +10,11 @@
   "readme": "../README.md",
   "output": "./output_schema.json",
   "storages": {
-    "dataset": {
-      "actorSpecification": 1,
-      "views": {
-        "apps": {
-          "title": "Apps",
-          "transformation": {
-            "fields": ["appId", "appName", "developer", "category", "score", "ratingsCount", "reviewsCount", "installs", "price", "priceText", "free", "contentRating", "version", "androidVersion", "updated", "appUrl", "iconUrl", "country", "scrapedAt"]
-          },
-          "display": {
-            "component": "table",
-            "properties": {
-              "appId": { "label": "App ID", "format": "text" },
-              "appName": { "label": "Name", "format": "text" },
-              "developer": { "label": "Developer", "format": "text" },
-              "category": { "label": "Category", "format": "text" },
-              "score": { "label": "Rating", "format": "number" },
-              "ratingsCount": { "label": "Ratings", "format": "number" },
-              "reviewsCount": { "label": "Reviews", "format": "number" },
-              "installs": { "label": "Installs", "format": "text" },
-              "price": { "label": "Price", "format": "number" },
-              "priceText": { "label": "Price (text)", "format": "text" },
-              "free": { "label": "Free", "format": "boolean" },
-              "contentRating": { "label": "Content Rating", "format": "text" },
-              "version": { "label": "Version", "format": "text" },
-              "androidVersion": { "label": "Android", "format": "text" },
-              "updated": { "label": "Updated", "format": "date" },
-              "appUrl": { "label": "URL", "format": "link" },
-              "iconUrl": { "label": "Icon", "format": "image" },
-              "country": { "label": "Country", "format": "text" },
-              "scrapedAt": { "label": "Scraped At", "format": "text" }
-            }
-          }
-        },
-        "reviews": {
-          "title": "Reviews",
-          "transformation": {
-            "fields": ["appId", "reviewId", "userName", "score", "text", "date", "thumbsUp", "reviewVersion", "developerReply", "scrapedAt"]
-          },
-          "display": {
-            "component": "table",
-            "properties": {
-              "appId": { "label": "App ID", "format": "text" },
-              "reviewId": { "label": "Review ID", "format": "text" },
-              "userName": { "label": "User", "format": "text" },
-              "score": { "label": "Rating", "format": "number" },
-              "text": { "label": "Review", "format": "text" },
-              "date": { "label": "Date", "format": "date" },
-              "thumbsUp": { "label": "Helpful", "format": "number" },
-              "reviewVersion": { "label": "Version", "format": "text" },
-              "developerReply": { "label": "Developer Reply", "format": "text" },
-              "scrapedAt": { "label": "Scraped At", "format": "text" }
-            }
-          }
-        }
-      }
-    }
+    "dataset": "./dataset_schema.json"
+  },
+  "exampleRunInput": {
+    "body": "{\"appIds\":[\"com.openai.chatgpt\"],\"maxResults\":1,\"country\":\"us\",\"language\":\"en\",\"proxyConfiguration\":{\"useApifyProxy\":false}}",
+    "contentType": "application/json; charset=utf-8"
   },
   "pricingInfo": {
     "pricingModel": "PAY_PER_EVENT",
@@ -73,14 +22,14 @@
       "actorChargeEvents": {
         "app-scraped": {
           "eventTitle": "App Scraped",
-          "eventDescription": "Charged for each Google Play app extracted and saved to the dataset.",
+          "eventDescription": "Charged for each validated Google Play app metadata record saved to the dataset.",
           "eventPriceUsd": 0.002,
           "isPrimaryEvent": true,
           "isOneTimeEvent": false
         },
         "review-scraped": {
           "eventTitle": "Review Scraped",
-          "eventDescription": "Charged for each Google Play app review extracted and saved to the dataset.",
+          "eventDescription": "Legacy inactive pricing event retained until the next permitted pricing update; this Actor version does not collect or charge for reviews.",
           "eventPriceUsd": 0.001,
           "isPrimaryEvent": false,
           "isOneTimeEvent": false
@@ -98,8 +47,8 @@
   "defaultRunOptions": {
     "build": "latest",
     "memoryMbytes": 512,
-    "timeoutSecs": 3600
+    "timeoutSecs": 1800
   },
   "minMemoryMbytes": 256,
-  "maxMemoryMbytes": 4096
+  "maxMemoryMbytes": 512
 }

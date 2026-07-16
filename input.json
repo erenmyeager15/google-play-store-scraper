@@ -1,9 +1,5 @@
 {
   "appIds": ["com.openai.chatgpt"],
-  "keywords": [],
-  "categories": [],
-  "includeReviews": false,
-  "maxReviewsPerApp": 0,
   "maxResults": 1,
   "country": "us",
   "language": "en",

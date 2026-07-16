@@ -1,0 +1,67 @@
+{
+  "actorSpecification": 1,
+  "fields": {
+    "source": { "type": "string" },
+    "recordType": { "type": "string" },
+    "appId": { "type": "string" },
+    "appName": { "type": "string" },
+    "developer": { "type": "string" },
+    "category": { "type": ["string", "null"] },
+    "categoryId": { "type": ["string", "null"] },
+    "score": { "type": ["number", "null"] },
+    "ratingsCount": { "type": ["integer", "null"] },
+    "reviewsCount": { "type": ["integer", "null"] },
+    "installs": { "type": ["string", "null"] },
+    "minInstalls": { "type": ["integer", "null"] },
+    "price": { "type": ["number", "null"] },
+    "priceText": { "type": ["string", "null"] },
+    "currency": { "type": ["string", "null"] },
+    "free": { "type": ["boolean", "null"] },
+    "offersInAppPurchases": { "type": ["boolean", "null"] },
+    "adSupported": { "type": ["boolean", "null"] },
+    "contentRating": { "type": ["string", "null"] },
+    "version": { "type": ["string", "null"] },
+    "androidVersion": { "type": ["string", "null"] },
+    "updated": { "type": ["string", "null"] },
+    "released": { "type": ["string", "null"] },
+    "appUrl": { "type": "string" },
+    "country": { "type": "string" },
+    "language": { "type": "string" },
+    "scrapedAt": { "type": "string" }
+  },
+  "views": {
+    "apps": {
+      "title": "Apps",
+      "transformation": {
+        "fields": [
+          "appId", "appName", "developer", "category", "score", "ratingsCount",
+          "reviewsCount", "installs", "priceText", "free", "contentRating", "version",
+          "androidVersion", "updated", "appUrl", "country", "language", "scrapedAt"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "appId": { "label": "App ID", "format": "text" },
+          "appName": { "label": "App", "format": "text" },
+          "developer": { "label": "Developer", "format": "text" },
+          "category": { "label": "Category", "format": "text" },
+          "score": { "label": "Rating", "format": "number" },
+          "ratingsCount": { "label": "Ratings", "format": "number" },
+          "reviewsCount": { "label": "Reviews", "format": "number" },
+          "installs": { "label": "Installs", "format": "text" },
+          "priceText": { "label": "Price", "format": "text" },
+          "free": { "label": "Free", "format": "boolean" },
+          "contentRating": { "label": "Content Rating", "format": "text" },
+          "version": { "label": "Version", "format": "text" },
+          "androidVersion": { "label": "Android", "format": "text" },
+          "updated": { "label": "Updated", "format": "date" },
+          "appUrl": { "label": "Google Play URL", "format": "link" },
+          "country": { "label": "Country", "format": "text" },
+          "language": { "label": "Language", "format": "text" },
+          "scrapedAt": { "label": "Scraped At", "format": "date" }
+        }
+      }
+    }
+  }
+}

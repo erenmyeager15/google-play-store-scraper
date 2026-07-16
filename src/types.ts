@@ -1,29 +1,27 @@
-export interface ActorInput {
-    appIds?: string[];
-    keywords?: string[];
-    categories?: string[];
-    includeReviews?: boolean;
-    maxReviewsPerApp?: number;
-    maxResults?: number;
-    country?: string;
-    language?: string;
-    proxyConfiguration?: {
-        useApifyProxy?: boolean;
-        apifyProxyGroups?: string[];
-        proxyUrls?: string[];
-    };
+export interface ProxyInput {
+    useApifyProxy: boolean;
+    apifyProxyGroups?: string[];
+    apifyProxyCountry?: string;
+    proxyUrls?: string[];
+}
+
+export interface NormalizedInput {
+    appIds: string[];
+    maxResults: number;
+    country: string;
+    language: string;
+    proxyConfiguration: ProxyInput;
 }
 
 export interface AppRecord {
+    source: 'google_play';
+    recordType: 'app';
     appId: string;
-    appName: string | null;
-    developer: string | null;
-    developerId: string | null;
-    developerWebsite: string | null;
+    appName: string;
+    developer: string;
     category: string | null;
     categoryId: string | null;
     score: number | null;
-    scoreText: string | null;
     ratingsCount: number | null;
     reviewsCount: number | null;
     installs: string | null;
@@ -33,33 +31,33 @@ export interface AppRecord {
     currency: string | null;
     free: boolean | null;
     offersInAppPurchases: boolean | null;
-    inAppPurchaseRange: string | null;
     adSupported: boolean | null;
     contentRating: string | null;
     version: string | null;
     androidVersion: string | null;
     updated: string | null;
     released: string | null;
-    summary: string | null;
-    description: string | null;
-    iconUrl: string | null;
-    headerImageUrl: string | null;
-    screenshots: string[];
-    privacyPolicyUrl: string | null;
     appUrl: string;
     country: string;
+    language: string;
     scrapedAt: string;
 }
 
-export interface ReviewRecord {
+export type RunOutcome = 'succeeded' | 'partial' | 'empty' | 'stopped_spending_limit' | 'failed';
+
+export interface RunCounters {
+    requested: number;
+    attempted: number;
+    fetched: number;
+    notFound: number;
+    failed: number;
+    invalid: number;
+    saved: number;
+    retries: number;
+}
+
+export interface RunDiagnostic {
     appId: string;
-    reviewId: string | null;
-    userName: string | null;
-    score: number | null;
-    text: string | null;
-    date: string | null;
-    thumbsUp: number | null;
-    reviewVersion: string | null;
-    developerReply: string | null;
-    scrapedAt: string;
+    kind: 'not_found' | 'source_error' | 'invalid_record';
+    message: string;
 }
