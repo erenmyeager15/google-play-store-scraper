@@ -5,6 +5,7 @@
   "description": "Look up factual public Google Play app metadata by package ID: developer, category, aggregate rating counts, installs, price, version, Android requirement, and official URL.",
   "version": "1.0",
   "categories": ["BUSINESS", "DEVELOPER_TOOLS", "ECOMMERCE"],
+  "categoriesVersion": "1.0.0",
   "dockerfile": "Dockerfile",
   "input": "../INPUT_SCHEMA.json",
   "readme": "../README.md",

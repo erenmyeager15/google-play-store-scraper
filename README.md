@@ -51,7 +51,9 @@ Each validated dataset row can include:
 - Content rating, version, Android requirement, release date, and update timestamp
 - Official Google Play app-detail URL, selected country/language, and scrape timestamp
 
-Example shape:
+## Verified Sample Output
+
+This record came from a direct public Google Play lookup for `com.openai.chatgpt` on August 2, 2026. Store values can change after collection.
 
 ```json
 {
@@ -62,26 +64,26 @@ Example shape:
   "developer": "OpenAI",
   "category": "Productivity",
   "categoryId": "PRODUCTIVITY",
-  "score": 4.7,
-  "ratingsCount": 1000000,
-  "reviewsCount": 100000,
-  "installs": "100,000,000+",
-  "minInstalls": 100000000,
+  "score": 4.7693677,
+  "ratingsCount": 51143308,
+  "reviewsCount": 175855,
+  "installs": "1,000,000,000+",
+  "minInstalls": 1000000000,
   "price": 0,
   "priceText": "Free",
   "currency": "USD",
   "free": true,
   "offersInAppPurchases": true,
-  "adSupported": false,
+  "adSupported": true,
   "contentRating": "Teen",
-  "version": "1.0.0",
-  "androidVersion": "7.0 and up",
-  "updated": "2026-07-01T00:00:00.000Z",
+  "version": "1.2026.202",
+  "androidVersion": "7.1",
+  "updated": "2026-08-01T03:50:14.000Z",
   "released": "Jul 21, 2023",
   "appUrl": "https://play.google.com/store/apps/details?id=com.openai.chatgpt",
   "country": "us",
   "language": "en",
-  "scrapedAt": "2026-07-16T00:00:00.000Z"
+  "scrapedAt": "2026-08-01T21:14:56.449Z"
 }
 ```
 
@@ -121,6 +123,8 @@ The Actor validates each app row before atomically saving and charging it. Proce
 ## Responsible Use
 
 Use this Actor only when your collection and downstream use comply with Google Play's current terms, machine-readable instructions, applicable laws, and any rights attached to the data. This Actor does not grant redistribution or other rights. Do not use it to identify, profile, contact, or target individual users.
+
+This independent Actor is not affiliated with, endorsed by, or sponsored by Google, Google Play, or the listed app publishers.
 
 ## License
 
