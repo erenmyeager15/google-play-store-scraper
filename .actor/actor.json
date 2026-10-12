@@ -1,8 +1,8 @@
 {
   "actorSpecification": 1,
   "name": "google-play-store-scraper",
-  "title": "Google Play App Metadata & Ratings Scraper",
-  "description": "Look up factual public Google Play app metadata by package ID: developer, category, aggregate rating counts, installs, price, version, Android requirement, and official URL.",
+  "title": "Google Play Scraper - Ratings, Installs & Versions",
+  "description": "Compare Android competitors for US app agencies: aggregate ratings, install ranges, versions, update dates and download prices. Look up known package IDs or official Google Play URLs with US/English settings and export CSV for client research. No API key required.",
   "version": "1.0",
   "categories": ["BUSINESS", "DEVELOPER_TOOLS", "ECOMMERCE"],
   "categoriesVersion": "1.0.0",

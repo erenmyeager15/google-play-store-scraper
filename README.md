@@ -1,8 +1,53 @@
-# Google Play App Metadata & Ratings Scraper
+# Google Play Scraper - Ratings, Installs & Versions
 
-Look up factual public Google Play app metadata from known Android package IDs or official app-detail URLs. Each saved row contains aggregate app metrics such as rating counts, installs, price, version, Android requirement, and the official Google Play URL.
+Build an Android competitor snapshot for US app agencies, ASO consultants and product teams. Compare known apps by aggregate ratings, install ranges, versions, update dates and download prices, then export CSV for a client brief or a dated spreadsheet comparison.
+
+Enter Android package IDs or official Google Play app-detail URLs. Choose `country: "us"` and `language: "en"` for a consistent US/English lookup. The starter uses direct public app-detail pages without a proxy or API key. Validated factual records include stable package identifiers, official listing links, selected locale and collection timestamps.
 
 This version intentionally supports direct app lookups only. It does not search Google Play, browse categories, collect descriptions or media, or extract individual user reviews.
+
+## US Android app agency workflows
+
+| Research question | Fields to compare | Client deliverable |
+| --- | --- | --- |
+| How do known Android competitors compare? | `score`, `ratingsCount`, `developer`, `category` | A dated competitor table with official listing links |
+| Has the public install bracket changed? | `installs`, `minInstalls` | A reported install-range comparison, not estimated US downloads |
+| Which apps have a different version or update date? | `version`, `updated`, `androidVersion` | A release snapshot comparison with collection dates |
+| Did the listed download price change? | `price`, `currency`, `free`, `offersInAppPurchases` | A same-locale, same-currency comparison with monetization flags |
+
+The selected country is a lookup setting, not a guarantee that every metric is US-specific. Install ranges and other aggregate values can be worldwide, approximate or personalized by the source. They do not establish exact downloads, active users, revenue or US audience demographics. Listed download prices exclude subscription plans and in-app purchase amounts.
+
+## Three-app US Android competitor-research starter
+
+Compare Notion, Evernote and Microsoft OneNote using the same country and language settings. These are illustrative productivity apps, not a ranking or endorsement. Replace the package IDs with your client's app and two known competitors.
+
+[Open US Android App Competitor Research](https://apify.com/fascinating_lentil/google-play-store-scraper/examples/us-android-competitor-research)
+
+```json
+{
+  "appIds": ["notion.id", "com.evernote", "com.microsoft.office.onenote"],
+  "maxResults": 3,
+  "country": "us",
+  "language": "en",
+  "proxyConfiguration": {
+    "useApifyProxy": false
+  }
+}
+```
+
+The package IDs were checked against official app listing URLs, and the configuration follows the existing input contract. These checks do not establish cloud availability or current profitability for this starter. Set `maxResults` to the number of unique packages you want to process: the Actor's unchanged default is one app. The starter is capped at three apps and has no schedule.
+
+## CSV snapshot comparison guide
+
+1. Collect the same package IDs with the same `country` and `language`. Check `RUN_STATUS` for saved, failed and not-found counts before reporting results.
+2. Export CSV using **all fields**. Keep `appId`, `country`, `language`, `appName`, `score`, `ratingsCount`, `reviewsCount`, `installs`, `minInstalls`, `version`, `updated`, `price`, `currency`, `appUrl` and `scrapedAt`.
+3. Save the first file as a dated baseline. On your chosen review date, collect another snapshot with the same packages and locale. Preserve both original exports.
+4. Join records on **`appId` + `country` + `language`**. Keep package IDs, version strings and install brackets as text.
+5. Compare present scores in rating points, counts as net aggregate changes, versions as strings and prices only when both numeric values exist in the same currency. Report install brackets as brackets; do not infer daily downloads from `minInstalls` differences.
+
+The Actor generates app snapshots and `RUN_STATUS` diagnostics. Persistent history, change calculations, alerts and a combined comparison report belong in your own spreadsheet or downstream workflow; they are not new built-in features of this Actor.
+
+Use the [field-by-field Android comparison guide](https://github.com/erenmyeager15/google-play-store-scraper/blob/main/examples/US-ANDROID-COMPARISON-GUIDE.md) for missing values, approximate installs, localized observations, versions and incomplete runs.
 
 ## Quick Start
 
@@ -111,6 +156,8 @@ Current configured prices:
 The pricing metadata also contains a legacy `review-scraped` event at `$0.001`. It is retained until the next permitted pricing update, but this version never collects reviews or emits that event.
 
 The Actor validates each app row before atomically saving and charging it. Processing stops when the user's event spending limit is reached.
+
+At the current configured price, three successfully saved apps have listed event fees of `$0.006` plus the `$0.00005` minimum start charge at the unchanged 512 MB setting: `$0.00605`. Platform usage is included in customer pricing. Missing or invalid app records are not billed as saved app results; a run can still incur the start charge. This is a price illustration, not a newly measured operating margin or paid-conversion claim.
 
 ## Reliability Boundaries
 

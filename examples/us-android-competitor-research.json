@@ -1,0 +1,9 @@
+{
+  "appIds": ["notion.id", "com.evernote", "com.microsoft.office.onenote"],
+  "maxResults": 3,
+  "country": "us",
+  "language": "en",
+  "proxyConfiguration": {
+    "useApifyProxy": false
+  }
+}
